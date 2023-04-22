@@ -10,23 +10,38 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
+import os
+import platform
+
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = environ.Path(__file__) - 2
 
+env = environ.Env()
+
+core_env = env.str("DONGFENG_ENV", "")
+if not core_env:
+    p = platform.system().lower()
+    if "darwin" in p or "macos" in p or "windows" in p:
+        core_env = "dev"
+    else:
+        core_env = "prod"
+
+# 指定encoding
+with open(f"{BASE_DIR.path('.envs')}/{core_env}.env", encoding="utf-8") as f:
+    env.read_env(f)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-u-a1iy_r(5*krr)r#fj3)xd)%f7#h=&@*4hs)w-4gurs946vxq"
+SECRET_KEY = env.str("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if core_env == "dev" else False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [".df-proj.com", "localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -54,7 +69,7 @@ ROOT_URLCONF = "dongfeng.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [str(BASE_DIR.path("templates"))],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -69,17 +84,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "dongfeng.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
-
+DATABASES = {"default": env.db()}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -99,25 +107,60 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "zh-hans"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Shanghai"
 
 USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = env.path("STATIC_ROOT")
+STATICFILES_DIRS = [str(BASE_DIR.path("static"))]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# 日志
+_fmt = "%(asctime)s | %(levelname)-7s | %(name)s:%(funcName)s:%(lineno)s | %(message)s"
+
+log_file = f"{BASE_DIR}/logs/dongfeng.log"
+log_dir = os.path.split(log_file)[0]
+if not os.path.exists(log_dir):
+    os.mkdir(log_dir)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "console_fmt": {"format": _fmt, "datefmt": "%Y-%m-%d %H:%M:%S"},
+        "file_fmt": {"format": _fmt, "datefmt": "%Y-%m-%d %H:%M:%S"},
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "level": "DEBUG", "formatter": "console_fmt"},
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "file_fmt",
+            "filename": log_file,
+            "encoding": "utf-8",
+            "maxBytes": 1024 * 1024 * 10,  # 10MB
+            "backupCount": 5,
+        },
+    },
+    "loggers": {
+        "": {"handlers": ["console"], "level": "DEBUG" if DEBUG else "INFO"},
+        "apps": {"handlers": ["console", "file"], "level": "DEBUG" if DEBUG else "INFO"},
+        "django": {"handlers": ["console"], "level": "INFO", "propagate": False},
+        "django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False},
+    },
+}

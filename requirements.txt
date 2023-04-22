@@ -1,2 +1,7 @@
 django
+django-extensions
+django-safedelete
+django-environ
+mysqlclient
+
 celery[redis]
