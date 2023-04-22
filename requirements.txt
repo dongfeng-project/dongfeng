@@ -5,3 +5,5 @@ django-environ
 mysqlclient
 
 celery[redis]
+gevent
+psutil

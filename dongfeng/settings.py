@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Custom
+    "apps.overwatch",
+    "apps.spaceport",
 ]
 
 MIDDLEWARE = [
@@ -164,3 +167,17 @@ LOGGING = {
         "django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False},
     },
 }
+
+# Celery
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://localhost:6379/0")
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_SERIALIZER = "pickle"
+CELERY_RESULT_SERIALIZER = CELERY_SERIALIZER
+CELERY_EVENT_SERIALIZER = CELERY_SERIALIZER
+CELERY_ACCEPT_CONTENT = ["json", "pickle"]
+
+CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_TASK_SOFT_TIME_LIMIT = 600  # seconds
+CELERY_TASK_TIME_LIMIT = 1800  # seconds
+CELERY_TASK_MAX_RETRIES = 3
