@@ -22,7 +22,7 @@ def get_worker_stats():
     :param self:
     :return:
     """
-    results = app.control.broadcast(TaskName.OVERWATCH_RESOURCE_USAGE.value, reply=True, timeout=20)
+    results = app.control.broadcast(TaskName.OVERWATCH_RESOURCE_USAGE.value, reply=True, timeout=5)
     for worker_stat_json in results:
         for hostname in worker_stat_json:
             logger.info(f"获取到worker [{hostname}] 信息 {worker_stat_json[hostname]}")
@@ -34,9 +34,9 @@ def resource_usage(state) -> ResourceUsageResult:
     with p.oneshot():
         worker_cpu = p.cpu_percent(interval=1)
         worker_mem = p.memory_info().rss / 1024 / 1024
-        uptime = time.time() - p.create_time()
         agent_threads = p.num_threads()
 
+    uptime = time.time() - psutil.boot_time()
     cpu = psutil.cpu_percent()
     mem = psutil.virtual_memory().percent
 
