@@ -2,7 +2,7 @@ import os
 
 from celery import Celery
 
-from consts.tasks import TaskName
+from consts.tasks import CeleryTaskName
 from .settings import CELERY_SERIALIZER, CELERY_RESULT_SERIALIZER
 
 # set the default Django settings module for the 'celery' program.
@@ -24,7 +24,7 @@ app.autodiscover_tasks()
 # celery beat
 app.conf.beat_schedule = {
     "get_worker_stats": {
-        "task": TaskName.OVERWATCH_GET_WORKER_STATS.value,
+        "task": CeleryTaskName.OVERWATCH_GET_WORKER_STATS.value,
         "schedule": 30,
     }
 }

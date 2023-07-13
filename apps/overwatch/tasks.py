@@ -7,7 +7,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery.worker.control import inspect_command
 
-from consts.tasks import TaskName
+from consts.tasks import CeleryTaskName
 from dongfeng.celery import app
 from entities.tasks import ResourceUsageResult
 from utils.ip import get_local_ip
@@ -15,20 +15,20 @@ from utils.ip import get_local_ip
 logger = get_task_logger(__name__)
 
 
-@shared_task(name=TaskName.OVERWATCH_GET_WORKER_STATS.value)
+@shared_task(name=CeleryTaskName.OVERWATCH_GET_WORKER_STATS.value)
 def get_worker_stats():
     """
     获取worker状态
     :param self:
     :return:
     """
-    results = app.control.broadcast(TaskName.OVERWATCH_RESOURCE_USAGE.value, reply=True, timeout=5)
+    results = app.control.broadcast(CeleryTaskName.OVERWATCH_RESOURCE_USAGE.value, reply=True, timeout=5)
     for worker_stat_json in results:
         for hostname in worker_stat_json:
             logger.info(f"获取到worker [{hostname}] 信息 {worker_stat_json[hostname]}")
 
 
-@inspect_command(name=TaskName.OVERWATCH_RESOURCE_USAGE.value)
+@inspect_command(name=CeleryTaskName.OVERWATCH_RESOURCE_USAGE.value)
 def resource_usage(state) -> ResourceUsageResult:
     p = psutil.Process(os.getpid())
     with p.oneshot():
