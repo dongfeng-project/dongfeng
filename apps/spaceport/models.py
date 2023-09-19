@@ -1,6 +1,6 @@
 from django.db import models
 
-from consts.tasks import TaskStatus
+from consts.task import TaskStatus
 from utils.models import BaseModel
 
 
@@ -38,3 +38,4 @@ class Task(BaseModel):
 class Setting(BaseModel):
     name = models.CharField(verbose_name="名称", max_length=128, db_index=True)
     value = models.TextField(verbose_name="值")
+    env = models.CharField(verbose_name="生效环境", max_length=64)

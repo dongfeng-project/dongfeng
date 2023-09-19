@@ -2,7 +2,7 @@ import os
 
 from celery import Celery
 
-from consts.tasks import CeleryTaskName
+from consts.task import CeleryTaskName
 from .settings import CELERY_SERIALIZER, CELERY_RESULT_SERIALIZER
 
 # set the default Django settings module for the 'celery' program.

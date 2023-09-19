@@ -7,9 +7,9 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from celery.worker.control import inspect_command
 
-from consts.tasks import CeleryTaskName
+from consts.task import CeleryTaskName
 from dongfeng.celery import app
-from entities.tasks import ResourceUsageResult
+from entities.task import ResourceUsageResult
 from utils.ip import get_local_ip
 
 logger = get_task_logger(__name__)
