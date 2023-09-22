@@ -2,8 +2,13 @@ django
 django-extensions
 django-safedelete
 django-environ
+djangorestframework
 mysqlclient
 
 celery[redis]
 gevent
 psutil
+
+requests
+pytest
+pytest-django

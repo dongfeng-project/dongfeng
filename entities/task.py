@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class ResourceUsageResult:
+    name: str
     ip: str
     hostname: str
     uptime: float

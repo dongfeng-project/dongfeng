@@ -13,5 +13,5 @@ def get_local_ip() -> str:
     try:
         return socket.gethostbyname(socket.gethostname())
     except Exception as e:
-        logger.error(f"获取本机IP异常 {e}", exc_info=True)
+        logger.error(f"get local ip address error {e}", exc_info=True)
         return ""

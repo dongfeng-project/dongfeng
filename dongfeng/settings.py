@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 import platform
+import socket
 
 import environ
 
@@ -23,7 +24,8 @@ env = environ.Env()
 core_env = env.str("DONGFENG_ENV", "")
 if not core_env:
     p = platform.system().lower()
-    if "darwin" in p or "macos" in p or "windows" in p:
+    hostname = socket.gethostname()
+    if "darwin" in p or "macos" in p or "windows" in p or hostname.startswith("DESKTOP-"):
         core_env = "dev"
     else:
         core_env = "prod"
@@ -41,7 +43,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if core_env == "dev" else False
 
-ALLOWED_HOSTS = [".df-proj.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = [".df-proj.com", "localhost", "127.0.0.1", "testserver"]
 
 # Application definition
 
@@ -52,9 +54,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third party
+    "rest_framework",
+    "rest_framework.authtoken",
     # Custom
     "apps.overwatch",
     "apps.spaceport",
+    "apps.warehouse",
 ]
 
 MIDDLEWARE = [
@@ -132,6 +138,19 @@ STATICFILES_DIRS = [str(BASE_DIR.path("static"))]
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Rest Framework
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework.authentication.SessionAuthentication",),
+    "DEFAULT_RENDERER_CLASSES": (
+        "utils.render.DFJsonRender",
+        # "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    )
+    if DEBUG
+    else ("utils.render.DFJsonRender",),
+}
+TOKEN = env.str("TOKEN", "")
 
 # 日志
 _fmt = "%(asctime)s | %(levelname)-7s | %(name)s:%(funcName)s:%(lineno)s | %(message)s"
