@@ -4,6 +4,8 @@ from . import models
 
 
 class WorkerSerializer(serializers.ModelSerializer):
+    status = serializers.ReadOnlyField()
+
     class Meta:
         model = models.Worker
         fields = "__all__"

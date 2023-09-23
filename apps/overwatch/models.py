@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.db import models
+from django.utils import timezone
 
 from utils.models import BaseModel
 
@@ -9,8 +12,16 @@ class Worker(BaseModel):
     hostname = models.CharField(verbose_name="主机名", max_length=512, db_index=True)
     ip = models.GenericIPAddressField(verbose_name="IP")
 
+    @property
+    def status(self):
+        latest_log = self.monitor_logs.order_by("-created").first()
+        if latest_log and latest_log.created >= (timezone.now() - timedelta(minutes=2)):
+            return "online"
+        else:
+            return "offline"
+
     def __str__(self):
-        return self.hostname
+        return self.name
 
     class Meta:
         verbose_name = "节点"

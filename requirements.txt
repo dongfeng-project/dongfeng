@@ -3,6 +3,7 @@ django-extensions
 django-safedelete
 django-environ
 djangorestframework
+django-debug-toolbar
 mysqlclient
 
 celery[redis]

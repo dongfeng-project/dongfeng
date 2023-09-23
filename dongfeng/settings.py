@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Third party
+    "debug_toolbar",
     "rest_framework",
     "rest_framework.authtoken",
     # Custom
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "dongfeng.urls"
@@ -200,3 +202,7 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_SOFT_TIME_LIMIT = 600  # seconds
 CELERY_TASK_TIME_LIMIT = 1800  # seconds
 CELERY_TASK_MAX_RETRIES = 3
+
+# Debug
+if DEBUG:
+    INTERNAL_IPS = ["127.0.0.1"]

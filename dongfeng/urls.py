@@ -19,6 +19,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from apps.overwatch.views import WorkerViewSet, WorkerMonitorLogViewSet
+from dongfeng import settings
 
 router = routers.DefaultRouter()
 router.register(prefix=r"worker", viewset=WorkerViewSet, basename="worker")
@@ -28,3 +29,6 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("admin/", admin.site.urls),
 ]
+
+if settings.DEBUG:
+    urlpatterns.append(path("__debug__", include("debug_toolbar.urls")))
