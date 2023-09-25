@@ -16,7 +16,27 @@ from utils.ip import get_local_ip
 logger = get_task_logger(__name__)
 
 
-@shared_task(name=CeleryTaskName.OVERWATCH_GET_WORKER_STATS.value)
+@shared_task(name=CeleryTaskName.OVERWATCH_REPORT_WORKER_MONITOR_LOG.value, ignore_result=True)
+def report_worker_monitor_log(result: ResourceUsageResult):
+    """
+    Report worker monitor log via HTTP API.
+    :param result:
+    :return:
+    """
+    api.report_worker_monitor_log(
+        name=result.name,
+        ip=result.ip,
+        hostname=result.hostname,
+        uptime=result.uptime,
+        cpu=result.cpu,
+        worker_cpu=result.worker_cpu,
+        mem=result.mem,
+        worker_mem=result.worker_mem,
+        worker_threads=result.worker_threads,
+    )
+
+
+@shared_task(name=CeleryTaskName.OVERWATCH_GET_WORKER_STATS.value, ignore_result=True)
 def get_worker_stats():
     """
     Get resource usage data of all workers.
@@ -27,17 +47,7 @@ def get_worker_stats():
         for hostname in worker_stat_json:
             r: ResourceUsageResult = worker_stat_json[hostname]
             logger.info(f"get worker [{hostname}] resource usage {r}")
-            api.report_worker_monitor_log(
-                name=r.name,
-                ip=r.ip,
-                hostname=r.hostname,
-                uptime=r.uptime,
-                cpu=r.cpu,
-                worker_cpu=r.worker_cpu,
-                mem=r.mem,
-                worker_mem=r.worker_mem,
-                worker_threads=r.worker_threads,
-            )
+            report_worker_monitor_log.delay(r)
 
 
 @inspect_command(name=CeleryTaskName.OVERWATCH_RESOURCE_USAGE.value)
