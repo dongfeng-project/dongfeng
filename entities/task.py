@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 
 @dataclass
@@ -12,3 +13,8 @@ class ResourceUsageResult:
     mem: float
     worker_mem: float
     worker_threads: int
+
+
+@dataclass
+class UpHostResult:
+    up_hosts: List[str]

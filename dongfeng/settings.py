@@ -186,6 +186,8 @@ LOGGING = {
         "apps": {"handlers": ["console", "file"], "level": "DEBUG" if DEBUG else "INFO"},
         "django": {"handlers": ["console"], "level": "INFO", "propagate": False},
         "django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False},
+        "celery": {"handlers": ["console"], "level": "INFO"},
+        "httpx": {"handlers": ["console"], "level": "INFO"},
     },
 }
 
@@ -195,13 +197,18 @@ CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_SERIALIZER = "pickle"
 CELERY_RESULT_SERIALIZER = CELERY_SERIALIZER
 CELERY_EVENT_SERIALIZER = CELERY_SERIALIZER
-CELERY_ACCEPT_CONTENT = ["json", "pickle"]
+CELERY_ACCEPT_CONTENT = ["application/x-python-serialize", "application/json"]
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 CELERY_TIMEZONE = TIME_ZONE
 
 CELERY_TASK_SOFT_TIME_LIMIT = 600  # seconds
 CELERY_TASK_TIME_LIMIT = 1800  # seconds
 CELERY_TASK_MAX_RETRIES = 3
+
+# API
+API_HOST = env.str("API_HOST", "127.0.0.1:8000")
+API_HTTPS = env.bool("API_HTTPS", False)
 
 # Debug
 if DEBUG:

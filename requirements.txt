@@ -1,3 +1,4 @@
+# web
 django
 django-extensions
 django-safedelete
@@ -6,10 +7,14 @@ djangorestframework
 django-debug-toolbar
 mysqlclient
 
+# task utils
 celery[redis]
 gevent
 psutil
-
-requests
+httpx
 pytest
 pytest-django
+
+# scanner
+python-nmap
+python-masscan
