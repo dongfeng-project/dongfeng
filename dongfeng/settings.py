@@ -43,7 +43,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if core_env == "dev" else False
 
-ALLOWED_HOSTS = [".df-proj.com", "localhost", "127.0.0.1", "testserver"]
+ALLOWED_HOSTS = [".df-proj.com", "localhost", "127.0.0.1", "testserver", env.str("HOST", "127.0.0.1")]
 
 # Application definition
 
@@ -207,9 +207,9 @@ CELERY_TASK_TIME_LIMIT = 1800  # seconds
 CELERY_TASK_MAX_RETRIES = 3
 
 # API
-API_HOST = env.str("API_HOST", "127.0.0.1:8000")
+API_HOST = f"{env.str('HOST', '127.0.0.1')}:{env.int('PORT', 8000)}"
 API_HTTPS = env.bool("API_HTTPS", False)
 
 # Debug
 if DEBUG:
-    INTERNAL_IPS = ["127.0.0.1"]
+    INTERNAL_IPS = ["127.0.0.1", env.str("HOST", "127.0.0.1")]
