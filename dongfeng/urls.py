@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from apps.overwatch.views import WorkerViewSet, WorkerMonitorLogViewSet
+from apps.overwatch.views import WorkerViewSet, WorkerMonitorLogViewSet, WorkerMonitorLogCleanupView
 from dongfeng import settings
 
 router = routers.DefaultRouter()
@@ -27,6 +27,7 @@ router.register(prefix=r"worker-monitor-log", viewset=WorkerMonitorLogViewSet, b
 
 urlpatterns = [
     path("api/", include(router.urls)),
+    path("api/worker-monitor-log-cleanup/", WorkerMonitorLogCleanupView.as_view()),
     path("admin/", admin.site.urls),
 ]
 

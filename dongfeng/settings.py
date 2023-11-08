@@ -187,7 +187,7 @@ LOGGING = {
         "django": {"handlers": ["console"], "level": "INFO", "propagate": False},
         "django.request": {"handlers": ["console"], "level": "ERROR", "propagate": False},
         "celery": {"handlers": ["console"], "level": "INFO"},
-        "httpx": {"handlers": ["console"], "level": "INFO"},
+        "httpx": {"handlers": ["console"], "level": "WARNING"},
     },
 }
 
