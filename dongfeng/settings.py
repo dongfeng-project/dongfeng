@@ -151,6 +151,8 @@ REST_FRAMEWORK = {
     )
     if DEBUG
     else ("utils.render.DFJsonRender",),
+    "DEFAULT_PAGINATION_CLASS": "utils.pagination.DFPagination",
+    "PAGE_SIZE": 10,
 }
 TOKEN = env.str("TOKEN", "")
 

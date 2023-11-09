@@ -3,6 +3,13 @@ from rest_framework import serializers
 from . import models
 
 
+class SimpleWorkerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Worker
+        fields = "__all__"
+        read_only_fields = ("id", "created", "updated")
+
+
 class WorkerSerializer(serializers.ModelSerializer):
     status = serializers.ReadOnlyField()
 
@@ -13,7 +20,7 @@ class WorkerSerializer(serializers.ModelSerializer):
 
 
 class WorkerMonitorLogSerializer(serializers.ModelSerializer):
-    worker = WorkerSerializer()
+    worker = SimpleWorkerSerializer()
 
     def create(self, validated_data):
         worker_data = validated_data.pop("worker")
