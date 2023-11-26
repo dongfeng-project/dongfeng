@@ -24,6 +24,17 @@ class WorkerMonitorLogViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     authentication_classes = (SessionAuthentication, TokenAuthentication)
 
+    def get_queryset(self):
+        worker_id = self.request.query_params.get("worker_id")
+        if worker_id:
+            return (
+                models.WorkerMonitorLog.objects.select_related("worker")
+                .filter(worker_id=worker_id)
+                .order_by("-created")
+            )
+        else:
+            return self.queryset
+
 
 class WorkerMonitorLogCleanupView(GenericAPIView):
     def get_queryset(self):

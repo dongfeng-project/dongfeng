@@ -2,16 +2,17 @@ import logging
 from urllib.parse import urljoin
 
 import httpx
+from celery.utils.log import get_task_logger
 from rest_framework.reverse import reverse
 
 from dongfeng.settings import TOKEN, API_HOST, API_HTTPS
 from exceptions.task import HTTPException
 
 client = httpx.Client()
-logger = logging.getLogger(__name__)
+logger = get_task_logger(__name__)
 
 
-def get_api_base_url(host: str, https: bool = False):
+def get_api_base_url(host: str, https: bool = False) -> str:
     """
     Generate API base URL.
     :param host:
@@ -81,7 +82,6 @@ def report_worker_monitor_log(
     :param worker_threads:
     :return:
     """
-
     try:
         req = send_req(
             method="post",
@@ -106,3 +106,20 @@ def report_worker_monitor_log(
         logger.error(f"request failed while reporting worker monitor log {e}")
     except Exception as e:
         logger.error(f"report worker monitor log failed {e}")
+
+
+def worker_monitor_log_cleanup() -> None:
+    """
+    Clean up worker monitor logs.
+    :return:
+    """
+    try:
+        req = send_req(method="delete", url=reverse(viewname="worker-monitor-log-cleanup"))
+        if req.status_code == 204:
+            logger.info(f"delete worker monitor logs success")
+        else:
+            logger.error(f"delete worker monitor error, {req.status_code}")
+    except HTTPException as e:
+        logger.error(f"request failed while delete worker monitor log {e}")
+    except Exception as e:
+        logger.error(f"delete worker monitor log failed {e}")

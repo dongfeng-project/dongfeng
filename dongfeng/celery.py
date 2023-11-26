@@ -31,5 +31,6 @@ app.conf.beat_schedule = {
     "get_worker_stats": {
         "task": CeleryTaskName.OVERWATCH_GET_WORKER_STATS.value,
         "schedule": 30,
-    }
+    },
+    "worker_monitor_log_cleanup": {"task": CeleryTaskName.OVERWATCH_WORKER_MONITOR_LOG_CLEANUP.value, "schedule": 60},
 }

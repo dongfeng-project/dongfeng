@@ -16,6 +16,15 @@ from utils.ip import get_local_ip
 logger = get_task_logger(__name__)
 
 
+@shared_task(name=CeleryTaskName.OVERWATCH_WORKER_MONITOR_LOG_CLEANUP.value, ignore_result=True)
+def worker_monitor_log_cleanup():
+    """
+    Clean up worker monitor log repeatedly.
+    :return:
+    """
+    api.worker_monitor_log_cleanup()
+
+
 @shared_task(name=CeleryTaskName.OVERWATCH_REPORT_WORKER_MONITOR_LOG.value, ignore_result=True)
 def report_worker_monitor_log(result: ResourceUsageResult):
     """
