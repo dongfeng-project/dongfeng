@@ -7,6 +7,7 @@ from utils.models import BaseModel
 # Create your models here.
 class Organization(BaseModel):
     name = models.CharField(verbose_name="名称", max_length=1024, db_index=True)
+    logo = models.URLField(verbose_name="Logo", blank=True, default="")
 
     class Meta:
         verbose_name = "组织"

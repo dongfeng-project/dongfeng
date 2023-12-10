@@ -19,15 +19,21 @@ from django.urls import path, include
 from rest_framework import routers
 
 from apps.overwatch.views import WorkerViewSet, WorkerMonitorLogViewSet, WorkerMonitorLogCleanupView
-from apps.spaceport.views import UserLoginView
+from apps.spaceport.views import UserLoginView, CurrentUserView
+from apps.warehouse.views import OrgViewSet, PackageViewSet, DomainViewSet, GenericIPViewSet
 from dongfeng import settings
 
 router = routers.DefaultRouter()
 router.register(prefix=r"worker", viewset=WorkerViewSet, basename="worker")
 router.register(prefix=r"worker-monitor-log", viewset=WorkerMonitorLogViewSet, basename="worker-monitor-log")
+router.register(prefix=r"organization", viewset=OrgViewSet, basename="org")
+router.register(prefix=r"package", viewset=PackageViewSet, basename="pkg")
+router.register(prefix=r"domain", viewset=DomainViewSet, basename="domain")
+router.register(prefix=r"ip", viewset=GenericIPViewSet, basename="ip")
 
 urlpatterns = [
     path("api/", include(router.urls)),
+    path("api/current-user/", CurrentUserView.as_view(), name="current-user"),
     path("api/login/", UserLoginView.as_view(), name="login"),
     path("api/worker-monitor-log-cleanup/", WorkerMonitorLogCleanupView.as_view(), name="worker-monitor-log-cleanup"),
     path("admin/", admin.site.urls),
